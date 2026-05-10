@@ -1,122 +1,84 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useState, useEffect } from "react";
+import "./App.css";
 
-function App() {
-  const [count, setCount] = useState(0)
+type Tab = "speaking" | "vocabulary" | "grammar" | "settings";
+type BackendStatus = "checking" | "ok" | "error";
+
+export default function App() {
+  const [tab, setTab] = useState<Tab>("speaking");
+  const [backend, setBackend] = useState<BackendStatus>("checking");
+
+  useEffect(() => {
+    const check = async () => {
+      try {
+        const res = await fetch("http://127.0.0.1:8000/health");
+        setBackend(res.ok ? "ok" : "error");
+      } catch {
+        setBackend("error");
+      }
+    };
+    check();
+    const interval = setInterval(check, 10000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+    <div className="app-root">
+      <header className="topbar">
+        <div className="logo">
+          <span className="logo-name">Awen</span>
+          <span className="logo-sub">German AI Tutor</span>
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
+        <nav className="nav-tabs">
+          {(["speaking", "vocabulary", "grammar", "settings"] as Tab[]).map((t) => (
+            <button key={t} className={`nav-tab ${tab === t ? "active" : ""}`} onClick={() => setTab(t)}>
+              {tabIcon(t)} {t.charAt(0).toUpperCase() + t.slice(1)}
+            </button>
+          ))}
+        </nav>
+        <div className="topbar-right">
+          <span className={`status-dot ${backend}`} title={`Backend: ${backend}`} />
+          <span className="level-tag">B2 Prep</span>
         </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+      </header>
 
-      <div className="ticks"></div>
+      <div className="app-body">
+        <aside className="sidebar">
+          <div className="sidebar-section">Practice</div>
+          <button className="sidebar-item active">🎙 Speak a paragraph</button>
+          <button className="sidebar-item">✏️ Write & correct</button>
+          <button className="sidebar-item">💬 Free conversation</button>
+          <div className="sidebar-section">Content</div>
+          <button className="sidebar-item">📄 Upload text</button>
+          <button className="sidebar-item">✨ Generate topic <span className="si-badge">AI</span></button>
+          <button className="sidebar-item">🕓 Past sessions</button>
+          <div className="score-box">
+            <div className="score-label">Backend</div>
+            <div className={`score-value ${backend}`}>
+              {backend === "ok" ? "Online" : backend === "error" ? "Offline" : "..."}
+            </div>
+          </div>
+        </aside>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+        <main className="main-content">
+          {backend === "checking" && <Placeholder icon="⏳" text="Connecting to backend..." />}
+          {backend === "error" && <Placeholder icon="⚠️" text="Backend offline — run python main.py in /backend" warn />}
+          {backend === "ok" && <Placeholder icon="🇩🇪" text="v0.2 connected — Speaking tab coming in v0.3" />}
+        </main>
+      </div>
+    </div>
+  );
 }
 
-export default App
+function tabIcon(t: Tab) {
+  return { speaking: "🎙", vocabulary: "🃏", grammar: "📖", settings: "⚙️" }[t];
+}
+
+function Placeholder({ icon, text, warn }: { icon: string; text: string; warn?: boolean }) {
+  return (
+    <div className={`placeholder ${warn ? "warn" : ""}`}>
+      <div className="ph-icon">{icon}</div>
+      <div className="ph-text">{text}</div>
+    </div>
+  );
+}
