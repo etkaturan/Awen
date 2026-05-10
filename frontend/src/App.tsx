@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import SpeakingTab from "./components/SpeakingTab";
 import "./App.css";
 
 type Tab = "speaking" | "vocabulary" | "grammar" | "settings";
@@ -63,7 +64,8 @@ export default function App() {
         <main className="main-content">
           {backend === "checking" && <Placeholder icon="⏳" text="Connecting to backend..." />}
           {backend === "error" && <Placeholder icon="⚠️" text="Backend offline — run python main.py in /backend" warn />}
-          {backend === "ok" && <Placeholder icon="🇩🇪" text="v0.2 connected — Speaking tab coming in v0.3" />}
+          {backend === "ok" && tab === "speaking" && <SpeakingTab apiKey="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" />}
+          {backend === "ok" && tab !== "speaking" && <Placeholder icon="🚧" text={`${tab} tab coming soon`} />}
         </main>
       </div>
     </div>
