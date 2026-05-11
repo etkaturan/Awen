@@ -36,6 +36,7 @@ function parseFeedback(text: string): Feedback {
 }
 
 export default function SpeakingTab({ apiKey }: { apiKey: string }) {
+  console.log("SpeakingTab apiKey:", apiKey); // temporary debug
   const [topic, setTopic] = useState(TOPICS[0]);
   const [messages, setMessages] = useState<Message[]>([
     {

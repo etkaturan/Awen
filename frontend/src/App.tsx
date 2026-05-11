@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import SpeakingTab from "./components/SpeakingTab";
+import SettingsTab from "./components/SettingsTab";
 import "./App.css";
 
 type Tab = "speaking" | "vocabulary" | "grammar" | "settings";
@@ -8,7 +9,8 @@ type BackendStatus = "checking" | "ok" | "error";
 export default function App() {
   const [tab, setTab] = useState<Tab>("speaking");
   const [backend, setBackend] = useState<BackendStatus>("checking");
-
+  const [apiKey, setApiKey] = useState(() => localStorage.getItem("awen_groq_key") || "");
+  
   useEffect(() => {
     const check = async () => {
       try {
@@ -58,14 +60,26 @@ export default function App() {
             <div className={`score-value ${backend}`}>
               {backend === "ok" ? "Online" : backend === "error" ? "Offline" : "..."}
             </div>
+            {!apiKey && (
+              <div style={{ fontSize: "11px", color: "var(--red)", marginTop: "6px" }}>
+                ⚠ No API key — go to Settings
+              </div>
+            )}
           </div>
         </aside>
 
         <main className="main-content">
           {backend === "checking" && <Placeholder icon="⏳" text="Connecting to backend..." />}
           {backend === "error" && <Placeholder icon="⚠️" text="Backend offline — run python main.py in /backend" warn />}
-          {backend === "ok" && tab === "speaking" && <SpeakingTab apiKey="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" />}
-          {backend === "ok" && tab !== "speaking" && <Placeholder icon="🚧" text={`${tab} tab coming soon`} />}
+          {backend === "ok" && (
+            <>
+              {tab === "speaking" && <SpeakingTab apiKey={apiKey} />}
+              {tab === "settings" && <SettingsTab apiKey={apiKey} onSave={setApiKey} />}
+              {(tab === "vocabulary" || tab === "grammar") && (
+                <Placeholder icon="🚧" text={`${tab} tab coming in next version`} />
+              )}
+            </>
+          )}
         </main>
       </div>
     </div>
