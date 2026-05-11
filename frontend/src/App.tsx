@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import SpeakingTab from "./components/SpeakingTab";
 import SettingsTab from "./components/SettingsTab";
 import "./App.css";
+import VocabularyTab from "./components/VocabularyTab";
+
 
 type Tab = "speaking" | "vocabulary" | "grammar" | "settings";
 type BackendStatus = "checking" | "ok" | "error";
@@ -75,9 +77,8 @@ export default function App() {
             <>
               {tab === "speaking" && <SpeakingTab apiKey={apiKey} />}
               {tab === "settings" && <SettingsTab apiKey={apiKey} onSave={setApiKey} />}
-              {(tab === "vocabulary" || tab === "grammar") && (
-                <Placeholder icon="🚧" text={`${tab} tab coming in next version`} />
-              )}
+              {tab === "vocabulary" && <VocabularyTab />}
+              {tab === "grammar" && <Placeholder icon="🚧" text="Grammar tab coming in next version" />}
             </>
           )}
         </main>
