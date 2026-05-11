@@ -3,7 +3,7 @@ import SpeakingTab from "./components/SpeakingTab";
 import SettingsTab from "./components/SettingsTab";
 import "./App.css";
 import VocabularyTab from "./components/VocabularyTab";
-
+import GrammarTab from "./components/GrammarTab";
 
 type Tab = "speaking" | "vocabulary" | "grammar" | "settings";
 type BackendStatus = "checking" | "ok" | "error";
@@ -78,7 +78,7 @@ export default function App() {
               {tab === "speaking" && <SpeakingTab apiKey={apiKey} />}
               {tab === "settings" && <SettingsTab apiKey={apiKey} onSave={setApiKey} />}
               {tab === "vocabulary" && <VocabularyTab />}
-              {tab === "grammar" && <Placeholder icon="🚧" text="Grammar tab coming in next version" />}
+              {tab === "grammar" && <GrammarTab apiKey={apiKey} />}
             </>
           )}
         </main>
