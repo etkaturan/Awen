@@ -365,12 +365,4 @@ cargo tauri dev
 
 MIT — © 2026 etkaturan
 
-Save it, then push:
-
-
-cd C:\Github\Awen
-git add README.md
-git commit -m "docs - comprehensive technical README"
-git push origin main
-
 
