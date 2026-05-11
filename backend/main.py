@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from core.database import init_db
 from routers import chat
 from routers import chat, vocabulary
-
+from routers import chat, vocabulary, speech
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -24,6 +24,8 @@ app.add_middleware(
 app.include_router(vocabulary.router)
 
 app.include_router(chat.router)
+
+app.include_router(speech.router)
 
 @app.get("/health")
 def health():

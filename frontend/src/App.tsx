@@ -1,9 +1,12 @@
+// Imports
 import { useState, useEffect } from "react";
 import SpeakingTab from "./components/SpeakingTab";
 import SettingsTab from "./components/SettingsTab";
 import "./App.css";
 import VocabularyTab from "./components/VocabularyTab";
 import GrammarTab from "./components/GrammarTab";
+import ParagraphTab from "./components/ParagraphTab";
+
 
 type Tab = "speaking" | "vocabulary" | "grammar" | "settings";
 type BackendStatus = "checking" | "ok" | "error";
@@ -54,7 +57,7 @@ export default function App() {
           <button className="sidebar-item">✏️ Write & correct</button>
           <button className="sidebar-item">💬 Free conversation</button>
           <div className="sidebar-section">Content</div>
-          <button className="sidebar-item">📄 Upload text</button>
+          <button className="sidebar-item" onClick={() => setTab("paragraph" as Tab)}>📄 Upload text</button>
           <button className="sidebar-item">✨ Generate topic <span className="si-badge">AI</span></button>
           <button className="sidebar-item">🕓 Past sessions</button>
           <div className="score-box">
@@ -79,6 +82,7 @@ export default function App() {
               {tab === "settings" && <SettingsTab apiKey={apiKey} onSave={setApiKey} />}
               {tab === "vocabulary" && <VocabularyTab />}
               {tab === "grammar" && <GrammarTab apiKey={apiKey} />}
+              {tab === "paragraph" && <ParagraphTab apiKey={apiKey} />}
             </>
           )}
         </main>
