@@ -374,3 +374,5 @@ cargo tauri dev
 ## License
 
 MIT — © 2026 etkaturan
+
+
