@@ -1,26 +1,61 @@
+/* ── Awen Design System ── */
 :root {
-  --bg:        #0e0d0b;
-  --bg2:       #171613;
-  --bg3:       #201e1a;
-  --bg4:       #2a2822;
-  --border:    rgba(255,255,255,0.07);
-  --border2:   rgba(255,255,255,0.13);
-  --text:      #f0ece2;
-  --text2:     #9c9788;
-  --text3:     #635f55;
+  /* Light theme */
+  --bg:        #faf9f7;
+  --bg2:       #f0ede8;
+  --bg3:       #e8e5e0;
+  --bg4:       #fff;
+  --border:    rgba(0,0,0,0.06);
+  --border2:   rgba(0,0,0,0.10);
+  --border3:   rgba(0,0,0,0.16);
+  --text:      #1a1a1a;
+  --text2:     #666;
+  --text3:     #aaa;
   --gold:      #c9a84c;
-  --gold-dim:  rgba(201,168,76,0.10);
-  --gold-mid:  rgba(201,168,76,0.22);
-  --teal:      #4caf96;
-  --teal-dim:  rgba(76,175,150,0.12);
-  --red:       #c95c4c;
-  --red-dim:   rgba(201,92,76,0.12);
-  --green:     #6aaa6a;
-  --green-dim: rgba(106,170,106,0.12);
-  --font-serif: 'Lora', Georgia, serif;
-  --font-sans:  'DM Sans', system-ui, sans-serif;
-  --topbar-h:  48px;
-  --sidebar-w: 210px;
+  --gold-dim:  rgba(245,200,66,0.10);
+  --gold-mid:  rgba(245,200,66,0.22);
+  --teal:      #2d8a3e;
+  --teal-dim:  rgba(45,138,62,0.10);
+  --red:       #c0392b;
+  --red-dim:   rgba(192,57,43,0.10);
+  --green:     #2d8a3e;
+  --green-dim: rgba(45,138,62,0.10);
+  --accent:    #1e3a6e;
+  --accent2:   #2a5090;
+  --accent-dim:rgba(30,58,110,0.10);
+  --sidebar-w: 56px;
+  --radius:    10px;
+  --font-sans: -apple-system,'Helvetica Neue',Arial,sans-serif;
+  --font-serif:'Georgia',serif;
+  --shadow-sm: 0 1px 4px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.10);
+}
+
+[data-theme="dark"] {
+  --bg:        #0d1117;
+  --bg2:       #0a0e14;
+  --bg3:       #111823;
+  --bg4:       #111823;
+  --border:    rgba(255,255,255,0.04);
+  --border2:   rgba(255,255,255,0.08);
+  --border3:   rgba(255,255,255,0.14);
+  --text:      #e8eef8;
+  --text2:     #4a6a9a;
+  --text3:     #2a3a5a;
+  --gold:      #7eb3ff;
+  --gold-dim:  rgba(30,58,110,0.25);
+  --gold-mid:  rgba(30,58,110,0.40);
+  --teal:      #4aaa6a;
+  --teal-dim:  rgba(74,170,106,0.12);
+  --red:       #e05a5a;
+  --red-dim:   rgba(224,90,90,0.12);
+  --green:     #4aaa6a;
+  --green-dim: rgba(74,170,106,0.12);
+  --accent:    #7eb3ff;
+  --accent2:   #2a5090;
+  --accent-dim:rgba(126,179,255,0.10);
+  --shadow-sm: 0 1px 4px rgba(0,0,0,0.4);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.5);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -35,17 +70,9 @@ html, body, #root {
   -webkit-font-smoothing: antialiased;
 }
 
-::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar { width: 3px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 2px; }
-::selection { background: var(--gold-mid); color: var(--text); }
-
-input, textarea, button, select {
-  font-family: inherit;
-  font-size: inherit;
-  color: inherit;
-  background: none;
-  border: none;
-  outline: none;
-}
+::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 2px; }
+::selection { background: var(--gold-mid); }
+input, textarea, button, select { font-family: inherit; font-size: inherit; color: inherit; background: none; border: none; outline: none; }
 button { cursor: pointer; }

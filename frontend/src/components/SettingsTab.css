@@ -68,3 +68,34 @@ select.field-input { cursor: pointer; }
   transition: all 0.15s;
 }
 .btn-save:hover { background: var(--gold-mid); }
+
+
+.theme-picker { display: flex; gap: 12px; margin-top: 4px; }
+
+.theme-option {
+  display: flex; flex-direction: column; gap: 6px;
+  cursor: pointer; transition: all 0.15s;
+}
+
+.theme-preview {
+  width: 100px; height: 64px; border-radius: 8px;
+  overflow: hidden; display: flex;
+  border: 2px solid transparent;
+  transition: border 0.15s;
+}
+
+.theme-option.active .theme-preview { border-color: var(--gold); }
+
+.tp-sidebar { width: 20px; height: 100%; }
+.tp-main { flex: 1; height: 100%; }
+
+.light-preview { background: #faf9f7; }
+.light-preview .tp-sidebar { background: #f0ede8; }
+.light-preview .tp-main { background: #faf9f7; }
+
+.dark-preview { background: #0d1117; }
+.dark-preview .tp-sidebar { background: #0a0e14; }
+.dark-preview .tp-main { background: #0d1117; }
+
+.theme-label { font-size: 11.5px; color: var(--text2); text-align: center; }
+.theme-option.active .theme-label { color: var(--gold); font-weight: 500; }

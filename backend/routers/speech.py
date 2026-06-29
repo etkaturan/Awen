@@ -3,6 +3,9 @@ from pydantic import BaseModel
 from services.llm.groq_service import GroqService
 from services.speech.tts import synthesize, get_all_voices
 from core.config import get_settings
+from fastapi import APIRouter, Depends, UploadFile, File, Form
+from services.speech.stt import transcribe_audio
+from fastapi import APIRouter, UploadFile, File, Form, Request
 
 router = APIRouter(prefix="/speech", tags=["speech"])
 
@@ -80,3 +83,41 @@ async def generate_listening(req: ListeningRequest):
         return json.loads(cleaned)
     except Exception:
         return {"error": "Could not parse AI response", "raw": response}
+    
+
+@router.post("/transcribe")
+async def transcribe(request: Request):
+    form = await request.form()
+    print(f"Form fields: {list(form.keys())}")
+    
+    audio = form.get("audio")
+    api_key = form.get("api_key", "")
+    language = form.get("language", "de")
+    
+    if not audio:
+        return {"text": "", "error": "no audio field"}
+    
+    audio_bytes = await audio.read()
+    print(f"Audio bytes: {len(audio_bytes)}, api_key present: {bool(api_key)}")
+    
+    if len(audio_bytes) < 1000:
+        return {"text": ""}
+    
+    text = await transcribe_audio(audio_bytes, api_key, language)
+    print(f"Transcription: {repr(text)}")
+    return {"text": text}
+
+
+# testing
+
+@router.post("/transcribe")
+async def transcribe(
+    audio: UploadFile = File(...),
+    api_key: str = Form(...),
+    language: str = Form("de")
+):
+    audio_bytes = await audio.read()
+    print(f"Audio received: {len(audio_bytes)} bytes, content_type: {audio.content_type}")
+    text = await transcribe_audio(audio_bytes, api_key, language)
+    print(f"Transcription result: {text}")
+    return {"text": text}
