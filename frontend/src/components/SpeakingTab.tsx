@@ -1,17 +1,18 @@
 import { useState, useRef, useEffect } from "react";
 import "./SpeakingTab.css";
+import { useLang } from "../context/LanguageContext";
 
 const TOPICS = [
-  { id: "general",    icon: "💬", name: "General conversation",   sub: "Free topic practice" },
-  { id: "umwelt",     icon: "🌿", name: "Umwelt & Klimawandel",   sub: "Environment & Climate" },
-  { id: "digital",   icon: "💻", name: "Digitalisierung",         sub: "Digitalisation & Society" },
-  { id: "bildung",   icon: "🎓", name: "Bildung & Schule",        sub: "Education & School" },
-  { id: "gesundheit",icon: "❤️", name: "Gesundheit",              sub: "Health & Lifestyle" },
-  { id: "arbeit",    icon: "💼", name: "Arbeitswelt",             sub: "Work & Career" },
-  { id: "migration", icon: "🌍", name: "Migration",               sub: "Migration & Integration" },
-  { id: "medien",    icon: "📰", name: "Medien",                  sub: "Media & News" },
-  { id: "wohnen",    icon: "🏙", name: "Wohnungsnot",             sub: "Housing shortage" },
-  { id: "politik",   icon: "🏛", name: "Politik & Gesellschaft",  sub: "Politics & Society" },
+  { id: "general",    icon: "💬", name: "General conversation",  sub: "Free topic practice" },
+  { id: "umwelt",     icon: "🌿", name: "Umwelt & Klimawandel",  sub: "Environment & Climate" },
+  { id: "digital",   icon: "💻", name: "Digitalisierung",        sub: "Digitalisation & Society" },
+  { id: "bildung",   icon: "🎓", name: "Bildung & Schule",       sub: "Education & School" },
+  { id: "gesundheit",icon: "❤️", name: "Gesundheit",             sub: "Health & Lifestyle" },
+  { id: "arbeit",    icon: "💼", name: "Arbeitswelt",            sub: "Work & Career" },
+  { id: "migration", icon: "🌍", name: "Migration",              sub: "Migration & Integration" },
+  { id: "medien",    icon: "📰", name: "Medien",                 sub: "Media & News" },
+  { id: "wohnen",    icon: "🏙", name: "Wohnungsnot",            sub: "Housing shortage" },
+  { id: "politik",   icon: "🏛", name: "Politik & Gesellschaft", sub: "Politics & Society" },
 ];
 
 interface Message {
@@ -50,6 +51,8 @@ function ScoreBar({ label, value, accent }: { label: string; value: number; acce
 }
 
 export default function SpeakingTab({ apiKey, micDevice }: { apiKey: string; micDevice: string }) {
+  const { t } = useLang();
+
   const [topic, setTopic]           = useState(TOPICS[0]);
   const [topicSearch, setTopicSearch] = useState("");
   const [topicOpen, setTopicOpen]   = useState(false);
@@ -63,6 +66,7 @@ export default function SpeakingTab({ apiKey, micDevice }: { apiKey: string; mic
   const [recording, setRecording]   = useState(false);
   const [aiSpeaking, setAiSpeaking] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const audioRef       = useRef<HTMLAudioElement>(null);
   const chunksRef      = useRef<Blob[]>([]);
@@ -82,24 +86,24 @@ export default function SpeakingTab({ apiKey, micDevice }: { apiKey: string; mic
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  const filteredTopics = TOPICS.filter(t =>
-    t.name.toLowerCase().includes(topicSearch.toLowerCase()) ||
-    t.sub.toLowerCase().includes(topicSearch.toLowerCase())
+  const filteredTopics = TOPICS.filter(tp =>
+    tp.name.toLowerCase().includes(topicSearch.toLowerCase()) ||
+    tp.sub.toLowerCase().includes(topicSearch.toLowerCase())
   );
 
-  const selectTopic = (t: typeof TOPICS[0]) => {
-    setTopic(t);
+  const selectTopic = (tp: typeof TOPICS[0]) => {
+    setTopic(tp);
     setTopicOpen(false);
     setTopicSearch("");
     setMessages([{
       role: "ai",
-      content: t.id === "general"
+      content: tp.id === "general"
         ? `Guten Tag! Let's have a free German conversation. Speak about anything — I will evaluate your fluency, grammar, and vocabulary.`
-        : `Let's practice "${t.name}". Speak in German about this topic and I will give you detailed feedback. Viel Erfolg!`,
+        : `Let's practice "${tp.name}". Speak in German about this topic and I will give you detailed feedback. Viel Erfolg!`,
     }]);
   };
 
-  // ── TTS ──────────────────────────────────────────────────────────────────────
+  // ── TTS ────────────────────────────────────────────────────────────────
   const speakText = async (text: string) => {
     try {
       setAiSpeaking(true);
@@ -119,7 +123,7 @@ export default function SpeakingTab({ apiKey, micDevice }: { apiKey: string; mic
     } catch { setAiSpeaking(false); }
   };
 
-  // ── Send to AI ────────────────────────────────────────────────────────────────
+  // ── Send to AI ──────────────────────────────────────────────────────────
   const sendText = async (text: string) => {
     if (!text.trim() || loading) return;
     setInput("");
@@ -146,7 +150,7 @@ export default function SpeakingTab({ apiKey, micDevice }: { apiKey: string; mic
     setLoading(false);
   };
 
-  // ── Recording ─────────────────────────────────────────────────────────────────
+  // ── Recording ───────────────────────────────────────────────────────────
   const startRecording = async () => {
     try {
       const constraints: MediaStreamConstraints = {
@@ -162,13 +166,15 @@ export default function SpeakingTab({ apiKey, micDevice }: { apiKey: string; mic
       chunksRef.current = [];
       mr.ondataavailable = e => { if (e.data.size > 0) chunksRef.current.push(e.data); };
       mr.onstop = async () => {
-        stream.getTracks().forEach(t => t.stop());
+        stream.getTracks().forEach(tr => tr.stop());
         await transcribeAndSend(new Blob(chunksRef.current, { type: mimeType }), mimeType);
       };
       mr.start();
       setMediaRecorder(mr);
       setRecording(true);
-    } catch { alert("Microphone access denied. Please allow microphone access."); }
+    } catch {
+      alert("Microphone access denied. Please allow microphone access.");
+    }
   };
 
   const stopRecording = () => {
@@ -186,7 +192,7 @@ export default function SpeakingTab({ apiKey, micDevice }: { apiKey: string; mic
       return;
     }
     try {
-      const ext = mimeType.includes("ogg") ? "ogg" : "webm";
+      const ext  = mimeType.includes("ogg") ? "ogg" : "webm";
       const form = new FormData();
       form.append("audio", blob, `audio.${ext}`);
       form.append("api_key", apiKey);
@@ -205,26 +211,27 @@ export default function SpeakingTab({ apiKey, micDevice }: { apiKey: string; mic
     }
   };
 
-  // ── Derived stats ─────────────────────────────────────────────────────────────
-  const scored  = messages.filter(m => m.feedback && m.feedback.fluency > 0);
-  const avg     = (k: keyof Feedback) => scored.length
+  // ── Derived stats ────────────────────────────────────────────────────────
+  const scored   = messages.filter(m => m.feedback && m.feedback.fluency > 0);
+  const avg      = (k: keyof Feedback) => scored.length
     ? Math.round(scored.reduce((a, m) => a + m.feedback![k], 0) / scored.length) : 0;
-  const avgF    = avg("fluency");
-  const avgA    = avg("accuracy");
-  const avgV    = avg("vocabulary");
-  const overall = avgF ? Math.round((avgF + avgA + avgV) / 3) : 0;
-  const lastAi  = [...messages].reverse().find(m => m.role === "ai");
+  const avgF     = avg("fluency");
+  const avgA     = avg("accuracy");
+  const avgV     = avg("vocabulary");
+  const overall  = avgF ? Math.round((avgF + avgA + avgV) / 3) : 0;
+  const lastAi   = [...messages].reverse().find(m => m.role === "ai");
   const userMsgs = messages.filter(m => m.role === "user");
 
   return (
     <div className="speaking-root">
 
-      {/* ── Center column ──────────────────────────────────────────────────── */}
+      {/* ── Center ─────────────────────────────────────────────────────── */}
       <div className="speak-main">
 
         {/* Header */}
         <div className="speak-header">
           <div className="speak-header-left">
+
             {/* Topic dropdown */}
             <div className="topic-dropdown" ref={topicRef}>
               <button className="topic-trigger" onClick={() => setTopicOpen(o => !o)}>
@@ -244,18 +251,18 @@ export default function SpeakingTab({ apiKey, micDevice }: { apiKey: string; mic
                     />
                   </div>
                   <div className="topic-list">
-                    {filteredTopics.map(t => (
+                    {filteredTopics.map(tp => (
                       <div
-                        key={t.id}
-                        className={`topic-option ${topic.id === t.id ? "active" : ""}`}
-                        onClick={() => selectTopic(t)}
+                        key={tp.id}
+                        className={`topic-option ${topic.id === tp.id ? "active" : ""}`}
+                        onClick={() => selectTopic(tp)}
                       >
-                        <span className="to-icon">{t.icon}</span>
+                        <span className="to-icon">{tp.icon}</span>
                         <div className="to-text">
-                          <div className="to-name">{t.name}</div>
-                          <div className="to-sub">{t.sub}</div>
+                          <div className="to-name">{tp.name}</div>
+                          <div className="to-sub">{tp.sub}</div>
                         </div>
-                        {topic.id === t.id && <span className="to-check">✓</span>}
+                        {topic.id === tp.id && <span className="to-check">✓</span>}
                       </div>
                     ))}
                     {filteredTopics.length === 0 && (
@@ -265,27 +272,22 @@ export default function SpeakingTab({ apiKey, micDevice }: { apiKey: string; mic
                 </div>
               )}
             </div>
+
             <div className="speak-sub">B2 Exam Prep</div>
           </div>
 
           {/* Mode toggle */}
           <div className="mode-toggle">
-            <button
-              className={`mode-btn ${mode === "voice" ? "active" : ""}`}
-              onClick={() => setMode("voice")}
-            >
+            <button className={`mode-btn ${mode === "voice" ? "active" : ""}`} onClick={() => setMode("voice")}>
               🎤 Voice
             </button>
-            <button
-              className={`mode-btn ${mode === "text" ? "active" : ""}`}
-              onClick={() => setMode("text")}
-            >
+            <button className={`mode-btn ${mode === "text" ? "active" : ""}`} onClick={() => setMode("text")}>
               💬 Text
             </button>
           </div>
         </div>
 
-        {/* ── VOICE MODE ─────────────────────────────────────────────────── */}
+        {/* ── VOICE MODE ──────────────────────────────────────────────── */}
         {mode === "voice" && (
           <div className="voice-mode">
             <div className="bg-blob b1" />
@@ -332,13 +334,13 @@ export default function SpeakingTab({ apiKey, micDevice }: { apiKey: string; mic
                 {loading ? "⏳" : recording ? "🔴" : "🎤"}
               </button>
               <div className="mic-hint">
-                {loading ? "Processing..." : recording ? "Release to send" : "Hold to speak"}
+                {loading ? t("speak_processing") : recording ? t("speak_release") : t("speak_hold")}
               </div>
             </div>
           </div>
         )}
 
-        {/* ── TEXT MODE ──────────────────────────────────────────────────── */}
+        {/* ── TEXT MODE ───────────────────────────────────────────────── */}
         {mode === "text" && (
           <div className="chat-mode">
             <div className="chat-messages">
@@ -369,16 +371,17 @@ export default function SpeakingTab({ apiKey, micDevice }: { apiKey: string; mic
               <button
                 className={`mic-inline ${recording ? "recording" : ""}`}
                 onMouseDown={startRecording} onMouseUp={stopRecording}
-                disabled={loading}
-                title="Hold to speak"
+                disabled={loading} title={t("speak_hold")}
               >
                 {recording ? "🔴" : "🎤"}
               </button>
               <textarea
                 value={input}
                 onChange={e => setInput(e.target.value)}
-                onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendText(input); }}}
-                placeholder="Schreib auf Deutsch... (Enter to send)"
+                onKeyDown={e => {
+                  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendText(input); }
+                }}
+                placeholder="Schreib auf Deutsch..."
                 rows={2}
               />
               <button className="send-btn" onClick={() => sendText(input)} disabled={loading || !input.trim()}>
@@ -389,7 +392,7 @@ export default function SpeakingTab({ apiKey, micDevice }: { apiKey: string; mic
         )}
       </div>
 
-      {/* ── Right panel ────────────────────────────────────────────────────── */}
+      {/* ── Right panel ────────────────────────────────────────────────── */}
       <div className="right-panel">
 
         {/* Overall score */}
@@ -441,13 +444,15 @@ export default function SpeakingTab({ apiKey, micDevice }: { apiKey: string; mic
             <div className="rp-empty">Start speaking to see your answers here</div>
           )}
           {userMsgs.slice(-3).reverse().map((m, i) => (
-            <div key={i} className="rp-answer-chip">{m.content.slice(0, 42)}{m.content.length > 42 ? "…" : ""}</div>
+            <div key={i} className="rp-answer-chip">
+              {m.content.slice(0, 42)}{m.content.length > 42 ? "…" : ""}
+            </div>
           ))}
         </div>
 
         <div className="rp-divider" />
 
-        {/* Tips */}
+        {/* B2 tip */}
         <div className="rp-section">
           <div className="rp-title">B2 tip</div>
           <div className="rp-tip">

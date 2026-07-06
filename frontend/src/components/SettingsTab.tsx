@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
 import "./SettingsTab.css";
+import { useLang } from "../context/LanguageContext";
+import { APP_LANGUAGES, LEARNING_LANGUAGES } from "../i18n/translations";
+import type { AppLanguage, LearningLanguage } from "../i18n/translations";
 
 interface Props {
   apiKey: string;
@@ -16,6 +19,7 @@ export default function SettingsTab({ apiKey, micDevice, theme, onSave }: Props)
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
   const [selectedMic, setSelectedMic] = useState(micDevice);
   const [selectedTheme, setSelectedTheme] = useState<"light" | "dark">(theme);
+  const { appLang, learnLang, setAppLang, setLearnLang } = useLang();
 
   useEffect(() => { setKey(apiKey); }, [apiKey]);
   useEffect(() => { setSelectedMic(micDevice); }, [micDevice]);
@@ -146,6 +150,27 @@ export default function SettingsTab({ apiKey, micDevice, theme, onSave }: Props)
             <option>B2 — Upper Intermediate</option>
             <option>B1 — Intermediate</option>
             <option>C1 — Advanced</option>
+          </select>
+        </div>
+
+
+        <div className="settings-section">Language</div>
+        <div className="field-group">
+          <label className="field-label">App language</label>
+          <div className="field-sub">Language of the interface</div>
+          <select className="field-input" value={appLang} onChange={e => setAppLang(e.target.value as AppLanguage)}>
+            {APP_LANGUAGES.map(l => (
+              <option key={l.code} value={l.code}>{l.native} — {l.label}</option>
+            ))}
+          </select>
+        </div>
+        <div className="field-group">
+          <label className="field-label">Learning language</label>
+          <div className="field-sub">The language you are studying</div>
+          <select className="field-input" value={learnLang} onChange={e => setLearnLang(e.target.value as LearningLanguage)}>
+            {LEARNING_LANGUAGES.map(l => (
+              <option key={l.code} value={l.code}>{l.flag} {l.label}</option>
+            ))}
           </select>
         </div>
 

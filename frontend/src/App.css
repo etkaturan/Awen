@@ -234,3 +234,31 @@
 .ph-icon { font-size: 32px; }
 .ph-text { font-size: 13px; text-align: center; max-width: 360px; line-height: 1.6; }
 .placeholder.warn .ph-text { color: var(--red); }
+
+.sidebar-group-label {
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text3);
+  width: 100%;
+  text-align: center;
+  padding: 6px 0 2px;
+}
+
+.sidebar-divider {
+  width: 24px;
+  height: 0.5px;
+  background: var(--border2);
+  margin: 6px auto;
+}
+
+.status-dot-global {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin: 2px auto 0;
+}
+.status-dot-global.checking { background: var(--text3); }
+.status-dot-global.ok       { background: var(--green); }
+.status-dot-global.error    { background: var(--red); }
