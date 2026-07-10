@@ -1,30 +1,123 @@
-# Awen — German AI Tutor Desktop App
+<div align="center">
 
-A full-stack desktop application for learning German, built for B2 exam preparation. Awen combines AI-powered conversation, speech synthesis, listening comprehension, vocabulary management, and grammar reference into a single native desktop experience.
+# 🦉 Awen
+
+**Your personal AI German tutor — speak it, hear it, write it, remember it.**
+
+A native desktop app for German B2 exam preparation. Real-time AI feedback on your speaking and writing, generated listening exercises with neural voices, flashcards, and grammar reference — all in one place.
+
+[![Version](https://img.shields.io/badge/version-1.2-22d3ee?style=flat-square)](https://github.com/etkaturan/Awen/releases)
+[![Tauri](https://img.shields.io/badge/Tauri-v2-FFC131?style=flat-square&logo=tauri&logoColor=white)](https://tauri.app)
+[![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev)
+[![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.111-009688?style=flat-square&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![License](https://img.shields.io/badge/license-MIT-a78bfa?style=flat-square)](LICENSE)
+
+<br/>
+
+<!-- TODO(etka): record with ScreenToGif, export ~900px wide, < 10 MB, save as docs/media/demo.gif -->
+![Awen demo — speaking practice with AI feedback and a generated listening exercise](docs/media/demo.gif)
+
+<br/>
+
+[**⬇ Download for Windows**](https://github.com/etkaturan/Awen/releases/latest) · [Report a bug](https://github.com/etkaturan/Awen/issues) · [Request a feature](https://github.com/etkaturan/Awen/issues)
+
+</div>
 
 ---
 
-## Table of Contents
+## Why Awen?
 
-- [Overview](#overview)
-- [Architecture](#architecture)
-- [Tech Stack](#tech-stack)
-- [Project Structure](#project-structure)
-- [Components](#components)
-- [API Reference](#api-reference)
-- [Setup & Installation](#setup--installation)
-- [Launching the App](#launching-the-app)
-- [Versioning](#versioning)
-- [Roadmap](#roadmap)
-- [License](#license)
+Language apps make you *recognize* German. Exams make you *produce* it. Awen is built around active production: every feature forces you to speak, write, listen, or recall — and an AI tutor evaluates every attempt in real time with structured feedback: **fluency, accuracy, and vocabulary scores (0–100)**, specific corrections, and one B2-level tip per response. Evaluation returns in under 2 seconds.
+
+Built as a 3-tier native app — React UI in a Rust/Tauri shell, Python FastAPI backend — with dual TTS engines: Microsoft Edge neural voices (5 German voices across DE/AT/CH accents) and the offline Kokoro-82M model.
 
 ---
 
-## Overview
+## Features
 
-Awen is designed around a single principle: learning a language requires active practice, not passive reading. Every feature is built to make the user produce German — speaking it, writing it, listening to it, and recalling it from memory.
+<table>
+  <tr>
+    <td width="50%">
+      <h3>🗣️ Speaking practice</h3>
+      <!-- TODO(etka): screenshot with a real conversation + visible score chips -->
+      <img src="docs/media/speaking.png" alt="Speaking tab — AI conversation with fluency, accuracy and vocabulary score chips" />
+      <p>Pick a B2 exam topic and converse with the AI tutor. Every message is scored — color-coded chips for fluency, accuracy and vocabulary — with concrete corrections and an improvement tip.</p>
+    </td>
+    <td width="50%">
+      <h3>🎧 Listening comprehension</h3>
+      <!-- TODO(etka): screenshot of the review phase (most impressive screen) -->
+      <img src="docs/media/listening.png" alt="Listening tab — generated exercise in review phase with per-question scoring" />
+      <p>Generates a fresh German listening exercise on any topic (A2–C1): audio via neural TTS, hidden text, comprehension questions, then a full review with per-question scoring.</p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <h3>🃏 Vocabulary flashcards</h3>
+      <!-- TODO(etka): screenshot with populated cards, mixed statuses -->
+      <img src="docs/media/vocabulary.png" alt="Vocabulary tab — flip flashcards with new/learning/known status tracking" />
+      <p>SQLite-backed flashcards with three learning states — <em>new</em>, <em>learning</em>, <em>known</em>. Flip to reveal translations; progress persists across sessions.</p>
+    </td>
+    <td width="50%">
+      <h3>📖 Grammar reference + AI explain</h3>
+      <!-- TODO(etka): screenshot of a grammar topic with the AI tip visible -->
+      <img src="docs/media/grammar.png" alt="Grammar tab — B2 reference tables with AI-generated tips" />
+      <p>Six B2 essentials — Cases, Konjunktiv II, Konnektoren, Passiv, Wortstellung, Genitiv — with reference tables, plus an AI button that generates personalized tips and common mistakes.</p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <h3>✍️ Paragraph practice</h3>
+      <!-- TODO(etka): screenshot of the feedback step -->
+      <img src="docs/media/paragraph.png" alt="Paragraph tab — write from memory and receive AI comparison feedback" />
+      <p>Paste or AI-generate a German paragraph, study its vocabulary and grammar, rewrite it from memory, and get a detailed AI comparison with scores.</p>
+    </td>
+    <td width="50%">
+      <h3>⚙️ Bring your own key</h3>
+      <!-- TODO(etka): screenshot of settings tab -->
+      <img src="docs/media/settings.png" alt="Settings tab — Groq API key management and model selector" />
+      <p>Runs on a free <a href="https://console.groq.com">Groq</a> API key (LLaMA 3.3 70B). Test and save your key in-app; OpenAI and local Ollama support are on the roadmap.</p>
+    </td>
+  </tr>
+</table>
 
-The AI tutor evaluates every attempt in real time, giving structured feedback on fluency, accuracy, and vocabulary with specific corrections and B2-level tips.
+---
+
+## Quick start
+
+**Prerequisites:** Python 3.10+ · Node.js 18+ · Rust + Cargo · Tauri CLI v2 (`cargo install tauri-cli --version "^2.0"`)
+
+```bash
+# 1. Clone
+git clone https://github.com/etkaturan/Awen.git
+cd Awen
+
+# 2. Backend
+cd backend
+python -m venv .venv
+.venv\Scripts\activate          # Windows  (macOS/Linux: source .venv/bin/activate)
+pip install -r requirements.txt
+
+# 3. Frontend
+cd ../frontend
+npm install
+```
+
+Get a free API key at [console.groq.com](https://console.groq.com) and either create `backend/.env` from `.env.example`:
+
+```env
+GROQ_API_KEY=your_key_here
+```
+
+…or enter it later in the app's **Settings** tab.
+
+**Run it:**
+
+| Mode | How |
+|---|---|
+| Development | Double-click `launch-dev.bat` — spawns backend (`:8000`), Vite (`:1420`) and the Tauri window |
+| Production | `cargo tauri build`, then double-click `launch.vbs` for a silent start |
+| Manual | `python main.py` + `npm run dev` + `cargo tauri dev` in three terminals |
 
 ---
 
@@ -58,160 +151,45 @@ The AI tutor evaluates every attempt in real time, giving structured feedback on
 └───────────────────────────────────────────┘
 ```
 
-### Data Flow
+**Data flow:** the React UI (in the Tauri webview) calls the FastAPI backend over REST → the backend routes to the LLM, TTS or DB service → Groq handles evaluation with CEFR-tuned structured prompts, TTS synthesizes locally or via Edge → audio returns base64-encoded and plays in the frontend alongside rendered feedback.
 
-1. User interacts with the React frontend (Tauri webview).
-2. Frontend sends HTTP requests to the Python backend on port `8000`.
-3. Backend routes requests to the appropriate service (LLM, TTS, DB).
-4. LLM service calls the Groq API with structured prompts.
-5. TTS service synthesizes audio via Edge TTS or Kokoro locally.
-6. Response returns as JSON, with audio as a base64-encoded string.
-7. Frontend decodes and plays the audio, then renders feedback.
+The LLM layer is built against an abstract `BaseLLM` interface — Groq is the active implementation, with OpenAI and Ollama stubs ready for v2.0.
 
----
-
-## Tech Stack
-
-| Layer | Technology | Version | Purpose |
-|---|---|---|---|
-| Desktop shell | Rust + Tauri | v2.0 | Native window, file system, IPC |
-| Frontend | React + TypeScript | 18.x | UI components and state |
-| Frontend build | Vite | 5.x | Dev server and bundler |
-| Backend | Python + FastAPI | 3.12 / 0.111 | REST API, business logic |
-| ASGI server | Uvicorn | 0.30 | Serves the FastAPI application |
-| LLM | Groq API | — | `llama-3.3-70b-versatile` |
-| TTS (German) | Edge TTS | 6.x | Microsoft neural voices, free, online |
-| TTS (English) | Kokoro-82M | 0.9+ | Open-weight local model, offline |
-| Database | SQLite | — | Vocabulary, sessions, user data |
-| State management | Zustand | — | Frontend global state |
-| Launcher | VBScript + BAT | — | Windows quick-launch scripts |
-
----
-
-## Project Structure
+<details>
+<summary><b>📁 Project structure</b></summary>
 
 ```text
 Awen/
-│
 ├── backend/                        # Python FastAPI application
 │   ├── main.py                     # App entry point, mounts all routers
-│   ├── requirements.txt            # Python dependencies
-│   ├── .env                        # API keys (not committed)
-│   ├── .env.example                # Template for environment setup
-│   │
-│   ├── core/
-│   │   ├── config.py               # Pydantic settings, loads .env
-│   │   └── database.py             # SQLite connection, table init
-│   │
-│   ├── routers/
-│   │   ├── chat.py                 # POST /chat/message, POST /chat/evaluate
-│   │   ├── speech.py               # POST /speech/tts, GET /speech/voices,
-│   │   │                           #   POST /speech/generate-listening,
-│   │   │                           #   POST /speech/analyze-paragraph,
-│   │   │                           #   POST /speech/practice-paragraph
-│   │   ├── vocabulary.py           # GET/POST /vocabulary, PATCH/DELETE /vocabulary/{id}
-│   │   ├── sessions.py             # Session history (v1.2)
-│   │   └── settings.py             # User settings (v1.3)
-│   │
+│   ├── core/                       # Settings (Pydantic), SQLite init
+│   ├── routers/                    # chat, speech, vocabulary, sessions, settings
 │   ├── services/
-│   │   ├── tutor.py                # System prompts, evaluate_speaking, tutor_chat
+│   │   ├── tutor.py                # System prompts, evaluation logic
 │   │   ├── document_parser.py      # PDF/DOCX text extraction
-│   │   │
-│   │   ├── llm/
-│   │   │   ├── base.py             # Abstract BaseLLM interface
-│   │   │   ├── groq_service.py     # Groq implementation (active)
-│   │   │   ├── openai_service.py   # OpenAI stub (future)
-│   │   │   └── ollama_service.py   # Ollama local stub (future)
-│   │   │
-│   │   └── speech/
-│   │       ├── tts.py              # Edge TTS + Kokoro synthesis, voice registry
-│   │       └── stt.py              # Speech-to-text (Whisper, v1.1)
-│   │
-│   └── models/
-│       ├── user.py                 # User schema
-│       ├── session.py              # Session schema
-│       └── vocabulary.py           # Vocabulary schema
+│   │   ├── llm/                    # BaseLLM interface, Groq / OpenAI / Ollama
+│   │   └── speech/                 # Edge TTS + Kokoro synthesis, Whisper STT
+│   └── models/                     # User, session, vocabulary schemas
 │
 ├── frontend/                       # React + Vite + TypeScript
-│   ├── index.html                  # HTML entry point, Google Fonts
-│   ├── vite.config.ts              # Vite config, port 1420
-│   ├── tsconfig.json               # TypeScript config
-│   ├── package.json                # Node dependencies
-│   │
 │   └── src/
-│       ├── main.tsx                # React entry, mounts App
-│       ├── App.tsx                 # Root layout, tab routing, backend health check
-│       ├── index.css               # Global CSS variables and resets
-│       ├── App.css                 # Layout styles (topbar, sidebar, main)
-│       │
-│       └── components/
-│           ├── SpeakingTab.tsx     # Topic selector, AI chat, feedback chips
-│           ├── SpeakingTab.css
-│           ├── ListeningTab.tsx    # Exercise generator, audio player, Q&A, review
-│           ├── ListeningTab.css
-│           ├── VocabularyTab.tsx   # Flashcards, add/delete, status tracking
-│           ├── VocabularyTab.css
-│           ├── GrammarTab.tsx      # Reference tables, AI explain button
-│           ├── GrammarTab.css
-│           ├── ParagraphTab.tsx    # Upload/generate, analyze, practice, feedback
-│           ├── ParagraphTab.css
-│           ├── SettingsTab.tsx     # API key input, test, save, model selector
-│           └── SettingsTab.css
+│       ├── App.tsx                 # Root layout, tab routing, health check
+│       └── components/             # One component + stylesheet per tab
 │
 ├── src-tauri/                      # Rust Tauri shell
-│   ├── src/
-│   │   ├── main.rs                 # App entry point
-│   │   └── lib.rs                  # Tauri builder, window config
-│   ├── tauri.conf.json             # Window size, CSP, bundle config
-│   ├── Cargo.toml                  # Rust dependencies
-│   └── icons/                      # App icons (PNG, ICO, ICNS)
+│   ├── src/                        # main.rs, lib.rs (window config)
+│   └── tauri.conf.json             # Window size, CSP, bundle config
 │
 ├── launch.vbs                      # Silent Windows launcher (production)
-├── launch-dev.bat                  # Dev launcher, opens 3 terminals
-├── .gitignore                      # Excludes .venv, node_modules, __pycache__, .db
-└── README.md                       # This file
+└── launch-dev.bat                  # Dev launcher, opens 3 terminals
 ```
 
----
+</details>
 
-## Components
-
-### Speaking Tab
-
-The core practice feature. Presents B2 exam topics, maintains a conversation history, and sends the user's German text to the AI tutor for evaluation. The tutor returns structured feedback including fluency, accuracy, and vocabulary scores (each 0–100), specific error corrections, and one B2-level improvement tip per response. Scores are parsed from the AI response and displayed as color-coded chips (green ≥ 80, amber ≥ 60, red < 60).
-
-### Listening Tab
-
-Generates a German listening exercise on a chosen topic and difficulty level. The flow has four phases:
-
-1. **Setup** — choose topic, difficulty (A2–C1), narrator voice, and playback speed.
-2. **Listening** — AI generates a 3–4 sentence German paragraph, synthesizes audio via Edge TTS; the player is shown, the text is hidden, and key vocabulary is visible.
-3. **Answering** — questions are shown in English; the user answers without seeing the text.
-4. **Review** — full text revealed, answers compared to correct answers, score calculated per question, vocabulary listed.
-
-### Vocabulary Tab
-
-SQLite-backed flashcard system. Words have three states — `new`, `learning`, `known` — indicated by colored dots. Cards flip on click to reveal the English translation. Status buttons update the word's state via a `PATCH` request. Words persist across sessions.
-
-### Grammar Tab
-
-Static reference content for six B2 grammar topics: Cases, Konjunktiv II, Konnektoren, Passiv, Wortstellung, and Genitiv. Each topic has a description, B2 exam tip, reference table, and example sentences. An "Ask AI tutor" button calls the backend to generate personalized tips and common mistakes for the selected topic.
-
-### Paragraph Tab
-
-Four-step practice flow: paste or AI-generate a German paragraph → AI analyzes vocabulary and grammar structures → user writes their version from memory → AI compares both versions and gives detailed feedback with scores.
-
-### Settings Tab
-
-API key management. Users enter their Groq API key, test it against the live backend, and save it to `localStorage`. The key persists across sessions and is passed with every API request. Includes a model selector (Groq active; OpenAI and Ollama stubbed for the future).
-
----
-
-## API Reference
+<details>
+<summary><b>🔌 API reference</b></summary>
 
 **Backend base URL:** `http://127.0.0.1:8000`
-
-### Endpoints
 
 | Method | Path | Body | Response |
 |---|---|---|---|
@@ -228,7 +206,10 @@ API key management. Users enter their Groq API key, test it against the live bac
 | `PATCH` | `/vocabulary/{id}` | `{status}` | `{ok}` |
 | `DELETE` | `/vocabulary/{id}` | — | `{ok}` |
 
-### TTS Voices
+</details>
+
+<details>
+<summary><b>🎙️ Available TTS voices</b></summary>
 
 **Edge TTS — German (online, Microsoft neural)**
 
@@ -260,119 +241,43 @@ API key management. Users enter their Groq API key, test it against the live bac
 | `kokoro_bf_emma` | Emma | GB Female |
 | `kokoro_bm_george` | George | GB Male |
 
----
-
-## Setup & Installation
-
-### Prerequisites
-
-- Python 3.10+
-- Node.js 18+
-- Rust + Cargo
-- Tauri CLI v2 (`cargo install tauri-cli --version "^2.0"`)
-
-### 1. Clone
-
-```bash
-git clone https://github.com/etkaturan/Awen.git
-cd Awen
-```
-
-### 2. Backend
-
-```bash
-cd backend
-python -m venv .venv
-
-# Windows
-.venv\Scripts\activate
-
-# macOS / Linux
-source .venv/bin/activate
-
-pip install -r requirements.txt
-```
-
-Create `backend/.env`:
-
-```env
-GROQ_API_KEY=your_key_here
-```
-
-### 3. Frontend
-
-```bash
-cd frontend
-npm install
-```
-
-### 4. Get a Groq API Key
-
-Go to [console.groq.com](https://console.groq.com), create a free account, and generate an API key. Paste it into `backend/.env`, or enter it in the app's Settings tab.
+</details>
 
 ---
 
-## Launching the App
+## Roadmap & version history
 
-### Development (recommended)
+**Shipped**
 
-Double-click `launch-dev.bat` — opens three terminals:
-
-- **Terminal 1:** Python backend on port `8000`
-- **Terminal 2:** Vite dev server on port `1420`
-- **Terminal 3:** Tauri desktop window
-
-### Production (after `cargo tauri build`)
-
-Double-click `launch.vbs` — silently starts the backend and launches the compiled `.exe`.
-
-### Manual
-
-```bash
-# Terminal 1 — backend
-cd backend && .venv\Scripts\activate && python main.py
-
-# Terminal 2 — frontend
-cd frontend && npm run dev
-
-# Terminal 3 — desktop shell
-cargo tauri dev
-```
-
----
-
-## Versioning
-
-| Version | Description |
+| Version | Highlights |
 |---|---|
-| v0.1 | Repo scaffold, `.gitignore`, README |
-| v0.2 | FastAPI backend, Groq chat endpoint |
-| v0.3 | Tauri shell, React frontend connected |
-| v0.4 | Speaking tab, AI feedback, score chips |
-| v0.5 | Settings tab, API key persistence |
-| v0.6 | Vocabulary tab, SQLite flashcards |
-| v0.7 | Grammar tab, reference tables, AI explain |
-| v0.8 | VBS launcher, dev BAT launcher |
-| v0.9 | Paragraph upload, analyze, practice flow |
-| v1.0 | Listening tab, Edge TTS, Kokoro voices |
+| v1.2 | Session history — save and review past sessions with scores · multi-language UI |
+| v1.1 | Microphone input — real speech-to-text via Whisper |
+| v1.0 | Listening tab, Edge TTS + Kokoro voices |
+| v0.9 | Paragraph upload, analyze & practice flow |
+| v0.4–v0.8 | Speaking tab with AI feedback, Settings, Vocabulary flashcards, Grammar reference, launchers |
+| v0.1–v0.3 | Scaffold, FastAPI backend + Groq, Tauri shell + React |
 
----
-
-## Roadmap
+**Planned**
 
 | Version | Feature |
 |---|---|
-| v1.1 | Microphone input — real speech-to-text via Whisper |
-| v1.2 | Session history — save and review past sessions with scores |
 | v1.3 | Multi-user profiles — separate progress, per-user API keys |
 | v1.4 | Listening improvements — question count, text length controls |
-| v1.5 | Production build — compiled `.exe`, silent launcher |
+| v1.5 | Production build — signed `.exe`, one-click installer |
 | v2.0 | OpenAI + Ollama LLM support, additional voice providers |
+
+Have an idea? [Open an issue](https://github.com/etkaturan/Awen/issues) — the roadmap is driven by real use.
 
 ---
 
 ## License
 
-MIT — © 2026 etkaturan
+MIT — © 2026 [etkaturan](https://github.com/etkaturan)
 
+<div align="center">
+<br/>
 
+**If Awen helps your German, a ⭐ helps others find it.**
+
+</div>
