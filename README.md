@@ -16,7 +16,7 @@ A native desktop app for German B2 exam preparation. Real-time AI feedback on yo
 <br/>
 
 <!-- TODO(etka): record with ScreenToGif, export ~900px wide, < 10 MB, save as docs/media/demo.gif -->
-![Awen demo — speaking practice with AI feedback and a generated listening exercise](docs/media/demo.gif)
+<!-- ![Awen demo — speaking practice with AI feedback and a generated listening exercise](docs/media/demo.gif) -->
 
 <br/>
 
@@ -41,13 +41,13 @@ Built as a 3-tier native app — React UI in a Rust/Tauri shell, Python FastAPI 
     <td width="50%">
       <h3>🗣️ Speaking practice</h3>
       <!-- TODO(etka): screenshot with a real conversation + visible score chips -->
-      <img src="docs/media/speaking.png" alt="Speaking tab — AI conversation with fluency, accuracy and vocabulary score chips" />
+      <!-- <img src="docs/media/speaking.png" alt="Speaking tab — AI conversation with fluency, accuracy and vocabulary score chips" /> -->
       <p>Pick a B2 exam topic and converse with the AI tutor. Every message is scored — color-coded chips for fluency, accuracy and vocabulary — with concrete corrections and an improvement tip.</p>
     </td>
     <td width="50%">
       <h3>🎧 Listening comprehension</h3>
       <!-- TODO(etka): screenshot of the review phase (most impressive screen) -->
-      <img src="docs/media/listening.png" alt="Listening tab — generated exercise in review phase with per-question scoring" />
+      <!-- <img src="docs/media/listening.png" alt="Listening tab — generated exercise in review phase with per-question scoring" /> -->
       <p>Generates a fresh German listening exercise on any topic (A2–C1): audio via neural TTS, hidden text, comprehension questions, then a full review with per-question scoring.</p>
     </td>
   </tr>
@@ -55,13 +55,13 @@ Built as a 3-tier native app — React UI in a Rust/Tauri shell, Python FastAPI 
     <td width="50%">
       <h3>🃏 Vocabulary flashcards</h3>
       <!-- TODO(etka): screenshot with populated cards, mixed statuses -->
-      <img src="docs/media/vocabulary.png" alt="Vocabulary tab — flip flashcards with new/learning/known status tracking" />
+      <!-- <img src="docs/media/vocabulary.png" alt="Vocabulary tab — flip flashcards with new/learning/known status tracking" /> -->
       <p>SQLite-backed flashcards with three learning states — <em>new</em>, <em>learning</em>, <em>known</em>. Flip to reveal translations; progress persists across sessions.</p>
     </td>
     <td width="50%">
       <h3>📖 Grammar reference + AI explain</h3>
       <!-- TODO(etka): screenshot of a grammar topic with the AI tip visible -->
-      <img src="docs/media/grammar.png" alt="Grammar tab — B2 reference tables with AI-generated tips" />
+      <!-- <img src="docs/media/grammar.png" alt="Grammar tab — B2 reference tables with AI-generated tips" /> -->
       <p>Six B2 essentials — Cases, Konjunktiv II, Konnektoren, Passiv, Wortstellung, Genitiv — with reference tables, plus an AI button that generates personalized tips and common mistakes.</p>
     </td>
   </tr>
@@ -69,13 +69,13 @@ Built as a 3-tier native app — React UI in a Rust/Tauri shell, Python FastAPI 
     <td width="50%">
       <h3>✍️ Paragraph practice</h3>
       <!-- TODO(etka): screenshot of the feedback step -->
-      <img src="docs/media/paragraph.png" alt="Paragraph tab — write from memory and receive AI comparison feedback" />
+      <!-- <img src="docs/media/paragraph.png" alt="Paragraph tab — write from memory and receive AI comparison feedback" /> -->
       <p>Paste or AI-generate a German paragraph, study its vocabulary and grammar, rewrite it from memory, and get a detailed AI comparison with scores.</p>
     </td>
     <td width="50%">
       <h3>⚙️ Bring your own key</h3>
       <!-- TODO(etka): screenshot of settings tab -->
-      <img src="docs/media/settings.png" alt="Settings tab — Groq API key management and model selector" />
+      <!-- <img src="docs/media/settings.png" alt="Settings tab — Groq API key management and model selector" /> -->
       <p>Runs on a free <a href="https://console.groq.com">Groq</a> API key (LLaMA 3.3 70B). Test and save your key in-app; OpenAI and local Ollama support are on the roadmap.</p>
     </td>
   </tr>
